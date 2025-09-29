@@ -8,7 +8,7 @@ export default function Home() {
 
       <div className="mb-6 text-center">
         <p>📩 frank8817@naver.com</p>
-        <p>🎓 산업정보시스템공학과 (4학년, 졸업 예정)</p>
+        <p>🎓 (4학년, 졸업 예정)</p>
         
         <p>📜 SAP Certified Associate - ABAP Cloud</p>
       </div>
