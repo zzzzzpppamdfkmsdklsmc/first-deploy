@@ -1,26 +1,48 @@
 "use client";
 import React, { useEffect, useState } from "react";
 
+type General = {
+  name: string;
+  github: string;
+  email?: string;
+  intro: string;
+  skills: string[];
+  certificates: string[];
+  career: string[];
+};
+
+type PortfolioItem = {
+  title: string;
+  intro: string;
+  url: string;
+  tech_stack: string[];
+  status: string; // "🚀 진행" | "👍 완료" | "👀 도움 필요" 같은 이모지 상태
+};
+
 export default function Home() {
-  const [general, setGeneral] = useState<any>(null);
-  const [portfolio, setPortfolio] = useState<any[]>([]);
+  const [general, setGeneral] = useState<General | null>(null);
+  const [portfolio, setPortfolio] = useState<PortfolioItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
       try {
         const [resGeneral, resPortfolio] = await Promise.all([
-          fetch("https://raw.githubusercontent.com/zzzzzpppamdfkmsdklsmc/first-deploy/refs/heads/0.3/general_info/service/resume_general_info_service.json"),
-          fetch("https://raw.githubusercontent.com/zzzzzpppamdfkmsdklsmc/first-deploy/refs/heads/0.3/general_info/service/resume_portfolio_service.json")
+          fetch(
+            "https://raw.githubusercontent.com/zzzzzpppamdfkmsdklsmc/first-deploy/refs/heads/main/service/resume_general_info_service.json"
+          ),
+          fetch(
+            "https://raw.githubusercontent.com/zzzzzpppamdfkmsdklsmc/first-deploy/refs/heads/main/service/resume_portfolio_service.json"
+          ),
         ]);
 
-        const generalData = await resGeneral.json();
-        const portfolioData = await resPortfolio.json();
+        const generalData = (await resGeneral.json()) as General;
+        const portfolioData = (await resPortfolio.json()) as PortfolioItem[];
 
         setGeneral(generalData);
         setPortfolio(portfolioData);
-      } catch (err) {
-        console.error("❌ JSON 불러오기 실패:", err);
+      } catch (error) {
+        console.error("데이터 로드 실패:", error);
       } finally {
         setLoading(false);
       }
@@ -28,8 +50,8 @@ export default function Home() {
     fetchData();
   }, []);
 
-  if (loading) return <p className="text-center mt-20">⏳ 데이터 불러오는 중...</p>;
-  if (!general) return <p className="text-center mt-20 text-red-500">❌ 데이터 로드 실패</p>;
+  if (loading) return <p className="p-10 text-center">⏳ 데이터 불러오는 중...</p>;
+  if (!general) return <p className="p-10 text-center text-red-500">❌ 데이터 로드 실패</p>;
 
   return (
     <main className="p-10 font-sans">
@@ -41,14 +63,16 @@ export default function Home() {
             🔗 {general.github}
           </a>
         </div>
+
         <div className="mt-6">
           <h2 className="text-2xl font-semibold mb-2">💡 Skills</h2>
           <p>{general.skills.join(", ")}</p>
         </div>
+
         <div className="mt-6">
           <h2 className="text-2xl font-semibold mb-2">🎓 Certificates</h2>
           <ul className="list-disc list-inside text-left inline-block">
-            {general.certificates.map((c: string, i: number) => (
+            {general.certificates.map((c, i) => (
               <li key={i}>{c}</li>
             ))}
           </ul>
