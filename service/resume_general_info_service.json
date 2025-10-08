@@ -1,0 +1,12 @@
+{
+  "name": "박성우",
+  "github": "https://github.com/sammual",
+  "email": "frank8817@naver.com",
+  "intro": "산업정보시스템공학과 4학년, ERP·AI 기반 시스템 개발에 관심이 있습니다.",
+  "skills": ["Next.js", "React", "Spring Boot", "ABAP", "Python", "YOLO"],
+  "certificates": ["SAP Certified Associate - ABAP Cloud"],
+  "career": [
+    "LG CNS AM Inspire Camp 3기 참여",
+    "전기차 화재 탐지 시스템 캡스톤 팀장"
+  ]
+}

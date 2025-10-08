@@ -1,0 +1,23 @@
+[
+  {
+    "title": "EV 화재 탐지·대응 시스템",
+    "intro": "YOLOv8 + Streamlit 기반 실시간 탐지 및 대응",
+    "url": "https://github.com/sammual/ev-fire-detection",
+    "tech_stack": ["YOLOv8", "Python", "Streamlit"],
+    "status": "🚀 진행"
+  },
+  {
+    "title": "디퓨저 ERP",
+    "intro": "ABAP 기반 구매·입고·발주 모듈",
+    "url": "https://github.com/sammual/abap-erp",
+    "tech_stack": ["ABAP", "SAP GUI", "ALV"],
+    "status": "👍 완료"
+  },
+  {
+    "title": "Health Routine Tracker",
+    "intro": "React + Spring Boot 웹앱",
+    "url": "https://github.com/sammual/health-tracker",
+    "tech_stack": ["React", "Spring Boot", "MariaDB"],
+    "status": "👀 도움 필요"
+  }
+]
