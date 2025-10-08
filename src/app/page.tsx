@@ -1,55 +1,103 @@
-// src/app/page.tsx
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
+
+type General = {
+  name: string;
+  github: string;
+  email?: string;
+  intro: string;
+  skills: string[];
+  certificates: string[];
+  career: string[];
+};
+
+type PortfolioItem = {
+  title: string;
+  intro: string;
+  url: string;
+  tech_stack: string[];
+  status: string; // "🚀 진행" | "👍 완료" | "👀 도움 필요" 같은 이모지 상태
+};
 
 export default function Home() {
+  const [general, setGeneral] = useState<General | null>(null);
+  const [portfolio, setPortfolio] = useState<PortfolioItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const [resGeneral, resPortfolio] = await Promise.all([
+          fetch(
+            "https://raw.githubusercontent.com/zzzzzpppamdfkmsdklsmc/first-deploy/refs/heads/main/service/resume_general_info_service.json"
+          ),
+          fetch(
+            "https://raw.githubusercontent.com/zzzzzpppamdfkmsdklsmc/first-deploy/refs/heads/main/service/resume_portfolio_service.json"
+          ),
+        ]);
+
+        const generalData = (await resGeneral.json()) as General;
+        const portfolioData = (await resPortfolio.json()) as PortfolioItem[];
+
+        setGeneral(generalData);
+        setPortfolio(portfolioData);
+      } catch (error) {
+        console.error("데이터 로드 실패:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <p className="p-10 text-center">⏳ 데이터 불러오는 중...</p>;
+  if (!general) return <p className="p-10 text-center text-red-500">❌ 데이터 로드 실패</p>;
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-10 font-sans">
-      {/* ✅ dev 브랜치의 안내 문구를 배너로 유지 */}
-      <div className="w-full max-w-2xl mb-6 rounded-xl border px-4 py-3 text-center">
-        <h2 className="text-xl font-semibold">🚀 First Deploy - v0.2 Update</h2>
-        <p>안녕하세요! Sammual의 Next.js 첫 배포 실습입니다.</p>
-        <p>이 내용은 <b>feature/0.2-update</b> 브랜치에서 수정되었습니다 🎉</p>
-      </div>
+    <main className="p-10 font-sans">
+      <section className="mb-10 text-center">
+        <h1 className="text-4xl font-bold">{general.name}</h1>
+        <p className="text-gray-600 mt-2">{general.intro}</p>
+        <div className="mt-4">
+          <a href={general.github} target="_blank" className="text-blue-600 underline">
+            🔗 {general.github}
+          </a>
+        </div>
 
-      {/* ✅ HEAD 브랜치의 프로필 섹션 유지 */}
-      <h1 className="text-4xl font-bold mb-2">박성우 / PARK SEONG WOO</h1>
-      <p className="text-lg text-gray-600 mb-6">좌우명 넣자~</p>
+        <div className="mt-6">
+          <h2 className="text-2xl font-semibold mb-2">💡 Skills</h2>
+          <p>{general.skills.join(", ")}</p>
+        </div>
 
-      <div className="mb-6 text-center">
-        <p>📩 frank8817@naver.com</p>
-        <p>🎓 (4학년, 졸업 예정)</p>
-        <p>📜 SAP Certified Associate - ABAP Cloud</p>
-      </div>
-
-      <div className="max-w-2xl text-left space-y-6">
-        <section>
-          <h2 className="text-2xl font-semibold mb-2">👥 프로젝트 경험</h2>
-          <ul className="list-disc list-inside">
-            <li>
-              <b>멀티 기능성 옷걸이 설계 (2022)</b> – 팀 리더, 시장조사·경제성 분석, 손익분기점 계산
-            </li>
-            <li>
-              <b>기업가정신과 행동 (2023)</b> – 아이들 식습관 개선 게임형 솔루션, 팀장, 시장조사·BM 수립
-            </li>
-            <li>
-              <b>데이터베이스 설계 (2023)</b> – 카카오톡 선물하기 DB 설계 및 구현, 팀장
-            </li>
-            <li>
-              <b>인간공학 프로젝트 (2023)</b> – 트리플 앱 UX 문제 분석 및 개선안 제시, 팀장
-            </li>
+        <div className="mt-6">
+          <h2 className="text-2xl font-semibold mb-2">🎓 Certificates</h2>
+          <ul className="list-disc list-inside text-left inline-block">
+            {general.certificates.map((c, i) => (
+              <li key={i}>{c}</li>
+            ))}
           </ul>
-        </section>
+        </div>
+      </section>
 
-        <section>
-          <h2 className="text-2xl font-semibold mb-2">🏆 공모전</h2>
-          <p>LH, 아이디어 유니버시아드, 제조 데이터 해커톤, 숭실 데이터톤 등 다수</p>
-        </section>
-
-        <section>
-          <h2 className="text-2xl font-semibold mb-2">💼 아르바이트 경험</h2>
-          <p>투썸플레이스 (2022~2025) – 카운터·조리·발주 관리</p>
-        </section>
-      </div>
-    </div>
+      <section>
+        <h2 className="text-3xl font-bold mb-4">📁 Portfolio</h2>
+        <div className="space-y-6">
+          {portfolio.map((p, i) => (
+            <div key={i} className="border rounded-xl p-5 shadow-sm">
+              <h3 className="text-2xl font-semibold flex items-center gap-2">
+                {p.title} <span>{p.status}</span>
+              </h3>
+              <p className="text-gray-700 mt-2">{p.intro}</p>
+              <a href={p.url} target="_blank" className="text-blue-600 underline">
+                🔗 {p.url}
+              </a>
+              <div className="mt-3 text-sm text-gray-600">
+                기술 스택: {p.tech_stack.join(", ")}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    </main>
   );
 }
